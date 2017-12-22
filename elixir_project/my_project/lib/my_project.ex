@@ -1,4 +1,5 @@
 defmodule MyProject do
+  use Application
   @moduledoc """
   Documentation for MyProject.
   """
@@ -14,5 +15,9 @@ defmodule MyProject do
   """
   def hello do
     :world
+  end
+
+  def start(_type, _args) do
+    KV.Supervisor.start_link(name: KV.Supervisor)
   end
 end

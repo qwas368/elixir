@@ -7,7 +7,7 @@ defmodule KV.Registry do
   Starts the registry.
   """
   def start_link(opts) do
-    IO.inspect 1
+    IO.inspect "#{to_string(__MODULE__)} + #{start_link()}"
     GenServer.start_link(__MODULE__, :ok, opts)
   end
 
@@ -17,7 +17,7 @@ defmodule KV.Registry do
   Returns `{:ok, pid}` if the bucket exists, `:error` otherwise.
   """
   def lookup(server, name) do
-    IO.inspect 2
+    IO.inspect "lookup()"
     GenServer.call(server, {:lookup, name})
   end
 
@@ -25,29 +25,50 @@ defmodule KV.Registry do
   Ensures there is a bucket associated with the given `name` in `server`.
   """
   def create(server, name) do
-    IO.inspect 3
+    IO.inspect "create()"
     GenServer.cast(server, {:create, name})
+  end
+
+  @doc """
+  Stops the registry.
+  """
+  def stop(server) do
+    IO.inspect "stop()"
+    GenServer.stop(server)
   end
 
   ## Server Callbacks
 
   def init(:ok) do
-    IO.inspect 4
-    {:ok, %{}}
+    names = %{}
+    refs  = %{}
+    {:ok, {names, refs}}
   end
 
-  def handle_call({:lookup, name}, _from, names) do
-    IO.inspect 5
-    {:reply, Map.fetch(names, name), names}
+  def handle_call({:lookup, name}, _from, {names, _} = state) do
+    {:reply, Map.fetch(names, name), state}
   end
 
-  def handle_cast({:create, name}, names) do
-    IO.inspect 6
+  def handle_cast({:create, name}, {names, refs}) do
     if Map.has_key?(names, name) do
-      {:noreply, names}
+      {:noreply, {names, refs}}
     else
-      {:ok, bucket} = KV.Bucket.start_link([])
-      {:noreply, Map.put(names, name, bucket)}
+      {:ok, pid} = KV.Bucket.start_link([])
+      ref = Process.monitor(pid)
+      refs = Map.put(refs, ref, name)
+      names = Map.put(names, name, pid)
+      {:noreply, {names, refs}}
     end
+  end
+
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs}) do
+    IO.inspect "handle_info()"
+    {name, refs} = Map.pop(refs, ref)
+    names = Map.delete(names, name)
+    {:noreply, {names, refs}}
+  end
+
+  def handle_info(_msg, state) do
+    {:noreply, state}
   end
 end
