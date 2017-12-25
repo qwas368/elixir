@@ -13,14 +13,16 @@ defmodule HelloWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", HelloWeb do
-    pipe_through :browser # Use the default browser stack
-
-    get "/", PageController, :index
-  end
+  # scope "/", HelloWeb do
+  #   pipe_through :browser # Use the default browser stack
+  #
+  #   get "/", PageController, :index
+  # end
 
   # Other scopes may use custom stacks.
-  # scope "/api", HelloWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", HelloWeb do
+    pipe_through :api
+
+    get "/users", UserController, :index
+  end
 end
