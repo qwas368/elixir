@@ -7,7 +7,8 @@ defmodule KV.Registry do
   Starts the registry.
   """
   def start_link(opts) do
-    IO.inspect "#{to_string(__MODULE__)} + #{start_link()}"
+    IO.inspect "KV.Registry start_link()"
+    server = Keyword.fetch!(opts, :name)
     GenServer.start_link(__MODULE__, :ok, opts)
   end
 
@@ -17,7 +18,7 @@ defmodule KV.Registry do
   Returns `{:ok, pid}` if the bucket exists, `:error` otherwise.
   """
   def lookup(server, name) do
-    IO.inspect "lookup()"
+    IO.inspect "KV.Registry lookup()"
     GenServer.call(server, {:lookup, name})
   end
 
@@ -25,7 +26,7 @@ defmodule KV.Registry do
   Ensures there is a bucket associated with the given `name` in `server`.
   """
   def create(server, name) do
-    IO.inspect "create()"
+    IO.inspect "KV.Registry create()"
     GenServer.cast(server, {:create, name})
   end
 
@@ -33,7 +34,7 @@ defmodule KV.Registry do
   Stops the registry.
   """
   def stop(server) do
-    IO.inspect "stop()"
+    IO.inspect "KV.Registry stop()"
     GenServer.stop(server)
   end
 
@@ -53,7 +54,7 @@ defmodule KV.Registry do
     if Map.has_key?(names, name) do
       {:noreply, {names, refs}}
     else
-      {:ok, pid} = KV.Bucket.start_link([])
+      {:ok, pid} = KV.BucketSupervisor.start_bucket()
       ref = Process.monitor(pid)
       refs = Map.put(refs, ref, name)
       names = Map.put(names, name, pid)
@@ -62,7 +63,7 @@ defmodule KV.Registry do
   end
 
   def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs}) do
-    IO.inspect "handle_info()"
+    IO.inspect {:DOWN, ref, :process, _pid, _reason}
     {name, refs} = Map.pop(refs, ref)
     names = Map.delete(names, name)
     {:noreply, {names, refs}}

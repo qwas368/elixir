@@ -1,6 +1,13 @@
 defmodule M do
-  defstruct []
+  @name M
+  def func do
+    IO.inspect  __MODULE__
+    IO.inspect  M
+    IO.inspect  @name
+    IO.puts @name
+    IO.puts __MODULE__
+    IO.puts M
+  end
 end
 
-[h , 4 | t] = [1, 2, 3]
-IO.inspect  h
+M.func
