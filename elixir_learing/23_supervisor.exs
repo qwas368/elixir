@@ -2,20 +2,25 @@ defmodule Stack do
   use GenServer
 
   def start_link(state) do
+    IO.inspect  "Stack start_link()"
+    IO.inspect  state
     GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   ## Callbacks
 
   def init(stack) do
+    IO.inspect  stack
     {:ok, stack}
   end
 
   def handle_call(:pop, _from, [h | t]) do
+    IO.inspect  [h | t]
     {:reply, h, t}
   end
 
   def handle_cast({:push, h}, t) do
+    IO.inspect  t
     {:noreply, [h | t]}
   end
 end
@@ -36,4 +41,10 @@ defmodule KV.Supervisor do
   end
 end
 
-{:ok, pid} =  Stack.start_link([])
+{:ok, pid} = Supervisor.start_link([
+  {Stack, [:hello]}
+], strategy: :one_for_one)
+
+IO.inspect GenServer.call(Stack, :pop)
+IO.inspect GenServer.cast(Stack, {:push, :world})
+IO.inspect GenServer.call(Stack, :pop)
