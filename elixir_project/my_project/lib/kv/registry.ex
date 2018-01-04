@@ -9,7 +9,7 @@ defmodule KV.Registry do
   def start_link(opts) do
     IO.inspect "KV.Registry start_link()"
     server = Keyword.fetch!(opts, :name)
-    GenServer.start_link(__MODULE__, :ok, opts)
+    GenServer.start_link(__MODULE__, server, opts)
   end
 
   @doc """
@@ -19,7 +19,10 @@ defmodule KV.Registry do
   """
   def lookup(server, name) do
     IO.inspect "KV.Registry lookup()"
-    GenServer.call(server, {:lookup, name})
+    case :ets.lookup(server, name) do
+      [{^name, pid}] -> {:ok, pid}
+      [] -> :error
+    end
   end
 
   @doc """
@@ -30,42 +33,33 @@ defmodule KV.Registry do
     GenServer.cast(server, {:create, name})
   end
 
-  @doc """
-  Stops the registry.
-  """
-  def stop(server) do
-    IO.inspect "KV.Registry stop()"
-    GenServer.stop(server)
-  end
-
   ## Server Callbacks
 
-  def init(:ok) do
-    names = %{}
+  def init(table) do
+    IO.inspect "KV.Registry init()"
+    IO.inspect table
+    names = :ets.new(table, [:named_table, read_concurrency: true])
     refs  = %{}
     {:ok, {names, refs}}
   end
 
-  def handle_call({:lookup, name}, _from, {names, _} = state) do
-    {:reply, Map.fetch(names, name), state}
-  end
-
   def handle_cast({:create, name}, {names, refs}) do
-    if Map.has_key?(names, name) do
-      {:noreply, {names, refs}}
-    else
-      {:ok, pid} = KV.BucketSupervisor.start_bucket()
-      ref = Process.monitor(pid)
-      refs = Map.put(refs, ref, name)
-      names = Map.put(names, name, pid)
-      {:noreply, {names, refs}}
+    case lookup(names, name) do
+      {:ok, _pid} ->
+        {:noreply, {names, refs}}
+      :error ->
+        {:ok, pid} = KV.BucketSupervisor.start_bucket()
+        ref = Process.monitor(pid)
+        refs = Map.put(refs, ref, name)
+        :ets.insert(names, {name, pid})
+        {:noreply, {names, refs}}
     end
   end
 
   def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs}) do
     IO.inspect {:DOWN, ref, :process, _pid, _reason}
     {name, refs} = Map.pop(refs, ref)
-    names = Map.delete(names, name)
+    :ets.delete(names, name)
     {:noreply, {names, refs}}
   end
 
