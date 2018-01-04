@@ -1,13 +1,13 @@
 defmodule M do
-  @name M
-  def func do
-    IO.inspect  __MODULE__
-    IO.inspect  M
-    IO.inspect  @name
-    IO.puts @name
-    IO.puts __MODULE__
-    IO.puts M
+  defstruct [
+    name: "J",
+    address: "K"
+  ]
+
+  def fun(s) do
+    # ...
   end
 end
 
-M.func
+M.fun(%M{})
+IO.inspect %M{}
