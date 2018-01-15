@@ -1,13 +1,3 @@
-defmodule M do
-  defstruct [
-    name: "J",
-    address: "K"
-  ]
-
-  def fun(s) do
-    # ...
-  end
+quote do
+  (5 * 2) - 1 + 7
 end
-
-M.fun(%M{})
-IO.inspect %M{}
