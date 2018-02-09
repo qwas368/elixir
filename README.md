@@ -21,3 +21,4 @@ elixir practice from [exercism](http://exercism.io/)
 - sum-of-multiples
 - twelve-days
 - word-count
+- sublist
