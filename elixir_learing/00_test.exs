@@ -1,10 +1,8 @@
-defmodule M do
-  def f([x]) do
-    IO.inspect x
-  end
-  def f(list) do
-
-  end
-end
-
-M.f([1,2])
+doc = Inspect.Algebra.concat(Inspect.Algebra.empty, "fasdfaadfsdfasfasfdoo")
+doc = Inspect.Algebra.glue("olá", " ", "mundo")
+doc = Inspect.Algebra.group(doc)
+doc
+|> Inspect.Algebra.format(10000)
+|> IO.inspect
+|> IO.iodata_to_binary()
+|> IO.inspect
