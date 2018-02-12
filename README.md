@@ -22,3 +22,4 @@ elixir practice from [exercism](http://exercism.io/)
 - twelve-days
 - word-count
 - sublist
+- pangram
