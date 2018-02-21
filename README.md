@@ -23,3 +23,5 @@ elixir practice from [exercism](http://exercism.io/)
 - word-count
 - sublist
 - pangram
+- anagram
+- matrix
