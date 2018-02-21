@@ -21,5 +21,3 @@ defmodule Pangram do
     |> (&(length(&1) == 26)).()
   end
 end
-
-Pangram.pangram?("the quick brown fox jumps over the lazy dog")
