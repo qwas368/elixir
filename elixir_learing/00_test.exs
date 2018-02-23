@@ -1,8 +1,17 @@
-doc = Inspect.Algebra.concat(Inspect.Algebra.empty, "fasdfaadfsdfasfasfdoo")
-doc = Inspect.Algebra.glue("olá", " ", "mundo")
-doc = Inspect.Algebra.group(doc)
-doc
-|> Inspect.Algebra.format(10000)
-|> IO.inspect
-|> IO.iodata_to_binary()
-|> IO.inspect
+defmodule M do
+  @map %{
+    "1" => 1,
+    "2" => 2
+  }
+  @open_brackets Map.keys(@map)
+
+  def function_name(a) when a in @open_brackets do
+    IO.inspect Map.keys(@map)
+  end
+
+  def function_name(a) do
+    IO.inspect "baz"
+  end
+end
+
+M.function_name("2")
