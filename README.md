@@ -29,3 +29,5 @@ elixir practice from [exercism](http://exercism.io/)
 - nth-prime
 - phone-number
 - rna-transcription
+- roman-numerals
+- all-your-base
