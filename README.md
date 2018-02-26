@@ -25,3 +25,7 @@ elixir practice from [exercism](http://exercism.io/)
 - pangram
 - anagram
 - matrix
+- bracket-push
+- nth-prime
+- phone-number
+- rna-transcription
