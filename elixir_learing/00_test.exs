@@ -14,4 +14,4 @@ defmodule M do
   end
 end
 
-M.function_name("2")
+IO.inspect String.downcase("EE3F54C7-CDEF-471B-AC19-CB040A5BEBF1")
