@@ -31,3 +31,7 @@ elixir practice from [exercism](http://exercism.io/)
 - rna-transcription
 - roman-numerals
 - all-your-base
+- beer-song
+- grade-school
+- isogram
+- triangle
