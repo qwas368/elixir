@@ -2,6 +2,30 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :etco_test, ExampleApp.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "etco_test_repo",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
+
+config :etco_test, EtcoTest.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "etco_test_repo",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
+
+config :etco_test, ExampleApp.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "etco_test_repo",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
@@ -28,3 +52,13 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+config :etco_test, ecto_repos: [EtcoTest.Repo]
+
+config :etco_test, EtcoTest.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "StayfunTst",
+  username: "postgres",
+  password: "Mayo1234",
+  hostname: "localhost",
+  port: "5432"
